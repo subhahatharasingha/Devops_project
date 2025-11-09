@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Home, User } from 'lucide-react';
+import { Mail, Lock, Home, User, X, CheckCircle } from 'lucide-react';
 import SIGNUPIMAGE from "../assets/signup1.png";
 import SIGNUPBG from "../assets/signupbg.jpeg";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,7 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -21,10 +22,10 @@ const SignupPage = () => {
       ...prev,
       [name]: value
     }));
-     if (error) setError('');
+    if (error) setError('');
+    if (success) setSuccess('');
   };
 
-  
   const handleSignup = async () => {
     if (!formData.username || !formData.email || !formData.password) {
       setError('Please fill in all fields');
@@ -38,6 +39,7 @@ const SignupPage = () => {
 
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
       const response = await fetch('http://localhost:4000/api/user/register', {
@@ -45,7 +47,7 @@ const SignupPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Important for cookies
+        credentials: 'include',
         body: JSON.stringify({
           name: formData.username,
           email: formData.email,
@@ -56,13 +58,18 @@ const SignupPage = () => {
       const data = await response.json();
 
       if (data.success) {
-        localStorage.setItem("authToken", data.token);
-        // Store user data in localStorage or context
+        setSuccess('Account created successfully! Redirecting...');
+        
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+        
         localStorage.setItem('user', JSON.stringify(data.user));
         window.dispatchEvent(new Event("storage")); 
         
-        // Redirect to dashboard or home page
-        navigate('/'); // Change this to your desired route
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       } else {
         setError(data.message || 'Signup failed');
       }
@@ -100,10 +107,40 @@ const SignupPage = () => {
                     <Home className="w-8 h-8 text-black" />
                     <span className="text-2xl font-bold text-gray-800">Dream Nest</span>
                   </div>
-                  <p className="text-gray-600 text-lg">Login into your account</p>
+                  <p className="text-gray-600 text-lg">Create your account</p>
                 </div>
 
-                
+                {/* Error Message */}
+                {error && (
+                  <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg relative">
+                    <div className="flex items-center">
+                      <X className="w-5 h-5 mr-2" />
+                      <span>{error}</span>
+                    </div>
+                    <button 
+                      className="absolute top-3 right-3 text-red-700 hover:text-red-900"
+                      onClick={() => setError('')}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Success Message */}
+                {success && (
+                  <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg relative">
+                    <div className="flex items-center">
+                      <CheckCircle className="w-5 h-5 mr-2" />
+                      <span>{success}</span>
+                    </div>
+                    <button 
+                      className="absolute top-3 right-3 text-green-700 hover:text-green-900"
+                      onClick={() => setSuccess('')}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
 
                 {/* Username Field */}
                 <div className="mb-6">
@@ -171,39 +208,37 @@ const SignupPage = () => {
                   </div>
                 </div>
 
-               
-
-                {/* Login Button */}
+                {/* Signup Button */}
                 <button
                   onClick={handleSignup}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-lg transition-colors mb-6"
+                  disabled={loading}
+                  className={`w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-lg transition-colors mb-6 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
-                  Signup now
+                  {loading ? 'Creating account...' : 'Signup now'}
                 </button>
 
-                {/* OR Divider */}
                 <div className="text-center mb-6">
                   <span className="text-gray-400 text-sm">OR </span>
                 </div>
 
-                {/* Signup Button */}
+                {/* Login Button */}
                 <button
                   onClick={() => navigate("/logging")}
                   className="w-full border-2 border-orange-500 text-orange-500 hover:bg-orange-50 font-bold py-4 rounded-lg transition-colors"
                 >
-                  Loging now
+                  Login now
                 </button>
               </div>
             </div>
 
             {/* Right Side - Illustration */}
             <div className="bg-gradient-to-br from-gray-100 to-gray-100 p-12 flex items-center justify-center relative overflow-hidden">
-      <img
-        src={SIGNUPIMAGE}
-        alt="Illustration"
-       className="w-full h-full object-cover rounded-none shadow-none"
-      />
-    </div>
+              <img
+                src={SIGNUPIMAGE}
+                alt="Illustration"
+                className="w-full h-full object-cover rounded-none shadow-none"
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -1,24 +1,43 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Logo from "../assets/home-6.png";
+import { Heart } from "lucide-react";
+import { favoritesAPI } from '../services/api.js';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [favoriteCount, setFavoriteCount] = useState(0);
+
+  // Fetch favorites count from API
+  const fetchFavoritesCount = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        setFavoriteCount(0);
+        return;
+      }
+
+      const data = await favoritesAPI.getFavoritesCount();
+      setFavoriteCount(data.count || 0);
+    } catch (error) {
+      console.error('Error fetching favorites count:', error);
+      setFavoriteCount(0);
+    }
+  };
 
   useEffect(() => {
     const checkLoginStatus = () => {
       try {
         const token = localStorage.getItem("authToken");
-        const userData = localStorage.getItem("user"); // Get user data
-        
+        const userData = localStorage.getItem("user");
+
         setIsLoggedIn(!!token);
-        
-        // Check if user is admin
+
         if (userData) {
           const user = JSON.parse(userData);
-          // Check both the role field and email for admin status
           if (user.role === "admin" || user.email === "admin@gmail.com") {
             setIsAdmin(true);
           } else {
@@ -27,65 +46,159 @@ const Navbar = () => {
         } else {
           setIsAdmin(false);
         }
+
+        // Fetch favorites count if logged in and not admin
+        if (token && !isAdmin) {
+          fetchFavoritesCount();
+        } else {
+          setFavoriteCount(0);
+        }
       } catch (error) {
         console.error("Error reading from localStorage:", error);
         setIsLoggedIn(false);
         setIsAdmin(false);
+        setFavoriteCount(0);
       }
     };
 
-    // Run immediately
     checkLoginStatus();
-
-    // Listen for storage changes
+    
+    // Listen for changes to localStorage
     window.addEventListener("storage", checkLoginStatus);
+    
+    // Custom event listener for favorites updates within the same tab
+    window.addEventListener("favoritesUpdated", fetchFavoritesCount);
 
     return () => {
       window.removeEventListener("storage", checkLoginStatus);
+      window.removeEventListener("favoritesUpdated", fetchFavoritesCount);
     };
-  }, [navigate]);
+  }, [isAdmin]); // Added isAdmin as dependency
 
   const handleLogout = () => {
     try {
       localStorage.removeItem("authToken");
-      localStorage.removeItem("user"); // Remove user data
+      localStorage.removeItem("user");
     } catch (error) {
       console.error("Error removing token:", error);
     }
     setIsLoggedIn(false);
     setIsAdmin(false);
+    setFavoriteCount(0);
     navigate("/logging");
   };
 
+  const handleFavoritesClick = () => {
+    if (isLoggedIn && !isAdmin) {
+      navigate("/favorites");
+    } else {
+      navigate("/logging");
+    }
+  };
+
   return (
-    <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-4 px-6 flex justify-between items-center">
       {/* Logo/Brand */}
       <div className="flex items-center">
+        <img 
+          src={Logo} 
+          alt="Dream Nest Logo" 
+          className="h-12 w-auto mr-2" 
+        />
         <span className="text-xl font-bold text-gray-800">Dream Nest</span>
       </div>
 
       {/* Navigation Links */}
-      <div className="hidden md:flex space-x-8">
-        <a href="/" className="text-gray-700 hover:text-orange-600 font-medium">Home</a>
-        <a href="land" className="text-gray-700 hover:text-orange-600 font-medium">Land</a>
-        <a href="appartment" className="text-gray-700 hover:text-orange-600 font-medium">Apartment</a>
-        <a href="houses" className="text-gray-700 hover:text-orange-600 font-medium">Houses</a>
+      <div className="hidden md:flex space-x-8 items-center">
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `font-medium ${isActive ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-700 hover:text-orange-600"}`
+          }
+        >
+          Home
+        </NavLink>
+        <NavLink
+          to="/land"
+          className={({ isActive }) =>
+            `font-medium ${isActive ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-700 hover:text-orange-600"}`
+          }
+        >
+          Land
+        </NavLink>
+        <NavLink
+          to="/appartment"
+          className={({ isActive }) =>
+            `font-medium ${isActive ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-700 hover:text-orange-600"}`
+          }
+        >
+          Apartment
+        </NavLink>
+        <NavLink
+          to="/houses"
+          className={({ isActive }) =>
+            `font-medium ${isActive ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-700 hover:text-orange-600"}`
+          }
+        >
+          Houses
+        </NavLink>
 
         {isLoggedIn && !isAdmin && (
-          <a href="property" className="text-gray-700 hover:text-orange-600 font-medium">
+          <NavLink
+            to="/property"
+            className={({ isActive }) =>
+              `font-medium ${isActive ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-700 hover:text-orange-600"}`
+            }
+          >
             Sell Your Property
-          </a>
+          </NavLink>
         )}
 
         {isAdmin && (
-          <a href="admin" className="text-gray-700 hover:text-orange-600 font-medium">
+          <NavLink
+            to="/admin"
+            className={({ isActive }) =>
+              `font-medium ${isActive ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-700 hover:text-orange-600"}`
+            }
+          >
             Admin Dashboard
-          </a>
+          </NavLink>
+        )}
+
+        {/* Favorites Section - Hidden for admin users */}
+        {!isAdmin && (
+          <button
+            onClick={handleFavoritesClick}
+            className="flex items-center font-medium text-gray-700 hover:text-orange-600 relative"
+          >
+            <Heart className="w-5 h-5 mr-1" />
+            Favorites
+            {favoriteCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {favoriteCount}
+              </span>
+            )}
+          </button>
         )}
       </div>
 
       {/* Right side - Login/Logout */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-4">
+        {/* Favorites button for mobile view - Hidden for admin users */}
+        {!isAdmin && (
+          <button
+            onClick={handleFavoritesClick}
+            className="md:hidden flex items-center text-gray-700 hover:text-orange-600 relative mr-2"
+          >
+            <Heart className="w-5 h-5" />
+            {favoriteCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {favoriteCount}
+              </span>
+            )}
+          </button>
+        )}
+
         {!isLoggedIn ? (
           <>
             <button

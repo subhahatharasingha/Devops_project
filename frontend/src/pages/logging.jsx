@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Mail, Lock, Home } from 'lucide-react';
+import { useState } from 'react';
+import { Mail, Lock, Home, X, CheckCircle } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import SIGNUPIMAGE from "../assets/signup1.png";
 import SIGNUPBG from "../assets/signupbg.jpeg";
@@ -13,6 +13,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const ADMIN_EMAIL = "admin@gmail.com";
   const ADMIN_PASSWORD = "Admin123";
@@ -24,31 +25,39 @@ const LoginPage = () => {
       [name]: value
     }));
     if (error) setError('');
+    if (success) setSuccess('');
   };
 
-   const handleLogin = async () => {
-  if (!formData.email || !formData.password) {
-    setError('Please fill in all fields');
-    return;
-  }
-
-  // Admin login logic
-  if (formData.email === ADMIN_EMAIL && formData.password === ADMIN_PASSWORD) {
-    const adminUser = { 
-      email: ADMIN_EMAIL, 
-      role: "admin",  // Make sure to set the role as "admin"
-      name: "Administrator" // Add any other admin details you want
-    };
-    
-    localStorage.setItem("authToken", "admin-token");
-    localStorage.setItem("user", JSON.stringify(adminUser));
-    window.dispatchEvent(new Event("storage"));
-    navigate("/admin");
-    return;
-  }
+  const handleLogin = async () => {
+    if (!formData.email || !formData.password) {
+      setError('Please fill in all fields');
+      return;
+    }
 
     setLoading(true);
     setError('');
+    setSuccess('');
+
+    // Admin login 
+    if (formData.email === ADMIN_EMAIL && formData.password === ADMIN_PASSWORD) {
+      const adminUser = { 
+        email: ADMIN_EMAIL, 
+        role: "admin",
+        name: "Administrator"
+      };
+      
+      localStorage.setItem("authToken", "admin-token");
+      localStorage.setItem("user", JSON.stringify(adminUser));
+      window.dispatchEvent(new Event("storage"));
+      
+      setSuccess('Admin login successful! Redirecting...');
+      setTimeout(() => {
+        navigate("/admin");
+      }, 1500);
+      
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:4000/api/user/login', {
@@ -56,7 +65,7 @@ const LoginPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Important for cookies
+        credentials: 'include',
         body: JSON.stringify({
           email: formData.email,
           password: formData.password
@@ -66,21 +75,28 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (data.success) {
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      window.dispatchEvent(new Event("storage"));
-      navigate('/');
-    } else {
-      setError(data.message || 'Login failed');
+        setSuccess('Login successful! Redirecting...');
+        
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+        
+        localStorage.setItem('user', JSON.stringify(data.user));
+        window.dispatchEvent(new Event("storage"));
+        
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Login error:', error);
-    setError('Network error. Please try again.');
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -93,8 +109,6 @@ const LoginPage = () => {
       >
         <div className="absolute top-0 right-0 h-full w-[30%] bg-orange-500 bg-opacity-50"></div>
       </div>
-
-     
 
       {/* Main Content */}
       <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] p-4">
@@ -112,6 +126,38 @@ const LoginPage = () => {
                   </div>
                   <p className="text-gray-600 text-lg">Login into your account</p>
                 </div>
+
+                {/* Error Message */}
+                {error && (
+                  <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg relative">
+                    <div className="flex items-center">
+                      <X className="w-5 h-5 mr-2" />
+                      <span>{error}</span>
+                    </div>
+                    <button 
+                      className="absolute top-3 right-3 text-red-700 hover:text-red-900"
+                      onClick={() => setError('')}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Success Message */}
+                {success && (
+                  <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg relative">
+                    <div className="flex items-center">
+                      <CheckCircle className="w-5 h-5 mr-2" />
+                      <span>{success}</span>
+                    </div>
+                    <button 
+                      className="absolute top-3 right-3 text-green-700 hover:text-green-900"
+                      onClick={() => setSuccess('')}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
 
                 {/* Email Field */}
                 <div className="mb-6">
@@ -167,12 +213,12 @@ const LoginPage = () => {
                 {/* Login Button */}
                 <button
                   onClick={handleLogin}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-lg transition-colors mb-6"
+                  disabled={loading}
+                  className={`w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-lg transition-colors mb-6 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
-                  Login now
+                  {loading ? 'Logging in...' : 'Login now'}
                 </button>
 
-                {/* OR Divider */}
                 <div className="text-center mb-6">
                   <span className="text-gray-400 text-sm">OR</span>
                 </div>
@@ -189,12 +235,12 @@ const LoginPage = () => {
 
             {/* Right Side - Illustration */}
             <div className="bg-gradient-to-br from-gray-100 to-gray-100 p-12 flex items-center justify-center relative overflow-hidden">
-      <img
-        src={SIGNUPIMAGE}
-        alt="Illustration"
-       className="w-full h-full object-cover rounded-none shadow-none"
-      />
-    </div>
+              <img
+                src={SIGNUPIMAGE}
+                alt="Illustration"
+                className="w-full h-full object-cover rounded-none shadow-none"
+              />
+            </div>
           </div>
         </div>
       </div>

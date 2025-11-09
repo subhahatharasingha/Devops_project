@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
-import { Search, MapPin, Home, Building, TreePine, Star } from 'lucide-react';
-import HomeImage from "../assets/home.jpeg";
+import { Link } from "react-router-dom";
+import { Search, MapPin, Home, Star } from 'lucide-react';
+import HomeImage from "../assets/home.jpg";
 import LandImage from "../assets/land.jpeg";
+import AppartmentImage from "../assets/home2.jpeg";
+import HomeImage1 from "../assets/home1.jpeg";
+import keyImage from "../assets/key.jpg";
 
 export default function Homepage() {
-  const [searchLocation, setSearchLocation] = useState('');
-  const [propertyType, setPropertyType] = useState('');
-  const [priceRange, setPriceRange] = useState('');
-
+  
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section with Teal Background */}
-      <div className="bg-gradient-to-r from-teal-500 to-teal-600 relative overflow-hidden">
-        {/* City skyline background image overlay */}
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r  relative overflow-hidden">
         <div 
           className="absolute inset-0 opacity-100"
           style={{
@@ -30,52 +29,6 @@ export default function Homepage() {
             <p className="text-xl md:text-2xl mb-12 opacity-90">
               From as low as $10 per day with limited time offer discounts.
             </p>
-            
-            {/* Search Form */}
-            <div className="bg-white rounded-lg p-6 shadow-2xl max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div className="text-left">
-                  <input
-                    type="text"
-                    placeholder="Enter location"
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
-                  />
-                </div>
-                
-                <div className="text-left">
-                  <select
-                    value={propertyType}
-                    onChange={(e) => setPropertyType(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
-                  >
-                    <option value="">Property Type</option>
-                    <option value="house">House</option>
-                    <option value="apartment">Apartment</option>
-                    <option value="land">Land</option>
-                  </select>
-                </div>
-                
-                <div className="text-left">
-                  <select
-                    value={priceRange}
-                    onChange={(e) => setPriceRange(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
-                  >
-                    <option value="">Price Range</option>
-                    <option value="0-100k">$0 - $100k</option>
-                    <option value="100k-500k">$100k - $500k</option>
-                    <option value="500k+">$500k+</option>
-                  </select>
-                </div>
-                
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md font-medium flex items-center justify-center transition-colors">
-                  <Search className="h-5 w-5 mr-2" />
-                  Search
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -130,7 +83,7 @@ export default function Homepage() {
               {/* Houses Card */}
               <div className="bg-white rounded-lg overflow-hidden shadow-lg">
                 <img 
-                  src={HomeImage}
+                  src={HomeImage1}
                   alt="House"
                   className="h-32 w-full object-cover"
                 />
@@ -140,21 +93,19 @@ export default function Homepage() {
                 </div>
               </div>
               
-              {/* Apartment Card - Spans 2 columns */}
+              {/* Apartment Card  */}
               <div className="col-span-2 bg-white rounded-lg overflow-hidden shadow-lg">
-                <div 
-                  className="h-32 bg-cover bg-center relative"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-end">
+               <div 
+                 className="h-32 bg-cover bg-center relative"
+                 style={{ backgroundImage: `url(${AppartmentImage})` }}
+                    >
+                  <div className="absolute inset-0  bg-opacity-50 flex items-end">
                     <div className="p-4 text-white">
                       <h3 className="text-xl font-bold mb-1">Apartment</h3>
                       <p className="text-lg font-semibold">8,945</p>
-                    </div>
                   </div>
                 </div>
+               </div>
               </div>
             </div>
           </div>
@@ -362,7 +313,6 @@ export default function Homepage() {
                 <p className="text-gray-600 mb-2">Price Rs. 25,000,000</p>
                 <p className="text-gray-500 text-sm mb-4">Bedrooms: 3 | Bathrooms: 2 | Area: 1,250 sqft</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-semibold">View Details</span>
                   <div className="flex items-center text-yellow-500">
                     <Star className="h-4 w-4 fill-current" />
                     <Star className="h-4 w-4 fill-current" />
@@ -393,7 +343,6 @@ export default function Homepage() {
                 <p className="text-gray-600 mb-2">Price Rs. 45,000,000</p>
                 <p className="text-gray-500 text-sm mb-4">Bedrooms: 4 | Bathrooms: 3 | Area: 2,800 sqft</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-semibold">View Details</span>
                   <div className="flex items-center text-yellow-500">
                     <Star className="h-4 w-4 fill-current" />
                     <Star className="h-4 w-4 fill-current" />
@@ -424,7 +373,6 @@ export default function Homepage() {
                 <p className="text-gray-600 mb-2">Price Rs. 35,000,000</p>
                 <p className="text-gray-500 text-sm mb-4">Bedrooms: 5 | Bathrooms: 4 | Area: 3,200 sqft</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-semibold">View Details</span>
                   <div className="flex items-center text-yellow-500">
                     <Star className="h-4 w-4 fill-current" />
                     <Star className="h-4 w-4 fill-current" />
@@ -455,7 +403,6 @@ export default function Homepage() {
                 <p className="text-gray-600 mb-2">Price Rs. 150,000/month</p>
                 <p className="text-gray-500 text-sm mb-4">Bedrooms: 3 | Bathrooms: 2 | Area: 1,800 sqft</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-semibold">View Details</span>
                   <div className="flex items-center text-yellow-500">
                     <Star className="h-4 w-4 fill-current" />
                     <Star className="h-4 w-4 fill-current" />
@@ -486,7 +433,6 @@ export default function Homepage() {
                 <p className="text-gray-600 mb-2">Price Rs. 200,000/month</p>
                 <p className="text-gray-500 text-sm mb-4">Bedrooms: 4 | Bathrooms: 3 | Area: 2,200 sqft</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-semibold">View Details</span>
                   <div className="flex items-center text-yellow-500">
                     <Star className="h-4 w-4 fill-current" />
                     <Star className="h-4 w-4 fill-current" />
@@ -517,7 +463,6 @@ export default function Homepage() {
                 <p className="text-gray-600 mb-2">Price Rs. 180,000/month</p>
                 <p className="text-gray-500 text-sm mb-4">Bedrooms: 2 | Bathrooms: 2 | Area: 1,100 sqft</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-semibold">View Details</span>
                   <div className="flex items-center text-yellow-500">
                     <Star className="h-4 w-4 fill-current" />
                     <Star className="h-4 w-4 fill-current" />
@@ -529,12 +474,13 @@ export default function Homepage() {
               </div>
             </div>
           </div>
-
-          <div className="text-center">
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md font-semibold transition-colors">
-              VIEW MORE
-            </button>
-          </div>
+         <div className="text-center">
+        <Link to="/houses">
+          <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md font-semibold transition-colors">
+             VIEW MORE
+          </button>
+          </Link>
+         </div>
         </div>
       </div>
 
@@ -548,21 +494,22 @@ export default function Homepage() {
           </div>
           
           <div className="relative">
-            <img 
-              src="https://images.unsplash.com/photo-1511895426328-dc8714191300?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
-              alt="Happy Family"
-              className="w-full h-96 object-cover rounded-lg"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg flex items-center justify-center">
-              <div className="text-center text-white">
-                <h3 className="text-3xl font-bold mb-4">Your Dream Home Awaits</h3>
-                <p className="text-xl mb-6">Start your journey to finding the perfect home for your family</p>
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md font-semibold transition-colors">
-                  Get Started
-                </button>
-              </div>
-            </div>
-          </div>
+  <img 
+    src={keyImage}   
+    alt="Happy Family"
+    className="w-full h-96 object-cover rounded-lg"
+  />
+  <div className="absolute inset-0 bg-opacity-40 rounded-lg flex items-center justify-center">
+    <div className="text-center text-white">
+      <h3 className="text-3xl font-bold mb-4">Your Dream Home Awaits</h3>
+      <p className="text-xl mb-6">Start your journey to finding the perfect home for your family</p>
+      <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md font-semibold transition-colors">
+        Get Started
+      </button>
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
 
@@ -579,7 +526,7 @@ export default function Homepage() {
             {/* Agent 1 */}
             <div className="bg-white rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow">
               <img 
-                src="https://images.unsplash.com/photo-1494790108755-2616b612b17c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
                 alt="Jenny White"
                 className="w-20 h-20 rounded-full mx-auto mb-4 object-cover"
               />
@@ -645,7 +592,7 @@ export default function Homepage() {
                 <MapPin className="h-8 w-8 text-gray-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Address:</h3>
-              <p className="text-gray-600">1234 Street Name, City Address, 1234</p>
+              <p className="text-gray-600">892/2 Dikwewa, Uswewa, Tangalle</p>
             </div>
 
             {/* Phone */}
@@ -656,7 +603,7 @@ export default function Homepage() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Phone:</h3>
-              <p className="text-gray-600">(123) 456-7890</p>
+              <p className="text-gray-600">+94703376797</p>
             </div>
 
             {/* Email */}
@@ -667,7 +614,7 @@ export default function Homepage() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">E-mail:</h3>
-              <p className="text-gray-600">mail@company.com</p>
+              <p className="text-gray-600">subanyakalpani@gmail.com</p>
             </div>
           </div>
 

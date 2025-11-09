@@ -12,10 +12,10 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true,
-  api_proxy: process.env.API_PROXY // Add if you're behind a proxy
+  api_proxy: process.env.API_PROXY 
 });
 
-// Verify the configuration
+
 cloudinary.api.ping()
   .then(res => console.log('Cloudinary connection verified'))
   .catch(err => console.error('Cloudinary connection failed:', err));

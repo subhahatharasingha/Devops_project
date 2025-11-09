@@ -54,7 +54,6 @@ const PropertySellPage = () => {
     setError('');
 
     try {
-      // Validate required fields
       const requiredFields = ['name', 'email', 'phone', 'address', 'title'];
       for (const field of requiredFields) {
         if (!formData[field]) {
@@ -62,10 +61,10 @@ const PropertySellPage = () => {
         }
       }
 
-      // Create FormData for file upload
+      
       const submitData = new FormData();
       
-      // Append all form data (match backend field names)
+      
       submitData.append('name', formData.name);
       submitData.append('email', formData.email);
       submitData.append('phone', formData.phone);
@@ -81,18 +80,16 @@ const PropertySellPage = () => {
       submitData.append('timeframe', formData.timeframe);
       submitData.append('additionalInfo', formData.additionalInfo);
       
-      // Append image with correct field name for backend
+     
       if (formData.propertyImage) {
         submitData.append('image', formData.propertyImage);
       }
 
-      // Send to backend
       const response = await propertyAPI.addProperty(submitData);
       
       if (response.success) {
         alert('Thank you for your submission! We will contact you soon.');
         
-        // Reset form
         setFormData({
           name: '',
           email: '',

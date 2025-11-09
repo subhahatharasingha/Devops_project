@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Home, Building, Plus, Edit3, Trash2, 
   Search, BarChart3, DollarSign, MapPin, Bed, Bath, Square,
-  X, Save
+  X, Save, CheckCircle, XCircle, Info
 } from 'lucide-react';
 
 // PropertyModal component with all required props
@@ -17,7 +17,8 @@ const PropertyModal = ({
   error, 
   categoryOptions,
   handleInputChange,
-  handleImageChange
+  handleImageChange,
+  loading
 }) => {
   // Function to handle form submission
   const handleSubmit = (e) => {
@@ -35,6 +36,7 @@ const PropertyModal = ({
           <button
             onClick={() => setShowModal(false)}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            disabled={loading}
           >
             <X className="w-5 h-5" />
           </button>
@@ -43,7 +45,8 @@ const PropertyModal = ({
         <form onSubmit={handleSubmit}>
           <div className="p-6 space-y-6">
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded flex items-center">
+                <XCircle className="w-5 h-5 mr-2" />
                 {error}
               </div>
             )}
@@ -62,6 +65,7 @@ const PropertyModal = ({
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                 required
+                disabled={loading}
               />
               <input
                 type="email"
@@ -71,6 +75,7 @@ const PropertyModal = ({
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                 required
+                disabled={loading}
               />
               <input
                 type="tel"
@@ -80,6 +85,7 @@ const PropertyModal = ({
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -97,6 +103,7 @@ const PropertyModal = ({
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                 required
+                disabled={loading}
               />
 
               <input
@@ -107,6 +114,7 @@ const PropertyModal = ({
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                 required
+                disabled={loading}
               />
               
               <div className="grid grid-cols-2 gap-4">
@@ -118,6 +126,7 @@ const PropertyModal = ({
                   onChange={handleInputChange}
                   className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                   min="0"
+                  disabled={loading}
                 />
                 <input
                   type="number"
@@ -127,6 +136,7 @@ const PropertyModal = ({
                   onChange={handleInputChange}
                   className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                   min="0"
+                  disabled={loading}
                 />
               </div>
 
@@ -137,6 +147,7 @@ const PropertyModal = ({
                 value={formData.squareFootage}
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                disabled={loading}
               />
 
               <select
@@ -145,6 +156,7 @@ const PropertyModal = ({
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-white"
                 required
+                disabled={loading}
               >
                 <option value="">Property Type</option>
                 <option value="houses">Houses</option>
@@ -156,7 +168,7 @@ const PropertyModal = ({
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                disabled={!formData.propertyType}
+                disabled={!formData.propertyType || loading}
                 className="text-black w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-white"
                 required
               >
@@ -174,6 +186,7 @@ const PropertyModal = ({
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-white"
                 required
+                disabled={loading}
               >
                 <option value="">Availability</option>
                 <option value="Buy">Buy</option>
@@ -188,6 +201,7 @@ const PropertyModal = ({
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                 required
+                disabled={loading}
               />
 
               <select
@@ -195,6 +209,7 @@ const PropertyModal = ({
                 value={formData.timeframe}
                 onChange={handleInputChange}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-white"
+                disabled={loading}
               >
                 <option value="">When do you want to sell?</option>
                 <option value="asap">As soon as possible</option>
@@ -211,6 +226,7 @@ const PropertyModal = ({
                 onChange={handleInputChange}
                 rows={4}
                 className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none resize-none"
+                disabled={loading}
               ></textarea>
               
               <div className="space-y-4">
@@ -220,6 +236,7 @@ const PropertyModal = ({
                   accept="image/*"
                   onChange={handleImageChange}
                   className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-white"
+                  disabled={loading}
                 />
 
                 {formData.image && (
@@ -238,15 +255,26 @@ const PropertyModal = ({
               type="button"
               onClick={() => setShowModal(false)}
               className="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              disabled={loading}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-2"
+              className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-2 disabled:bg-orange-300 disabled:cursor-not-allowed"
+              disabled={loading}
             >
-              <Save className="w-4 h-4" />
-              {modalType === 'add' ? 'Add Property' : 'Update Property'}
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  {modalType === 'add' ? 'Adding...' : 'Updating...'}
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  {modalType === 'add' ? 'Add Property' : 'Update Property'}
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -263,8 +291,12 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [properties, setProperties] = useState([]);
+  
+  // Message states
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [info, setInfo] = useState(null);
 
   const categoryOptions = {
     houses: ["Luxury Villa", "Signature Villa", "Holiday Villa"],
@@ -289,6 +321,29 @@ const AdminDashboard = () => {
     additionalInfo: '',
     image: null,
   });
+
+  // Message display functions
+  const showError = (message) => {
+    setError(message);
+    setTimeout(() => setError(null), 5000);
+  };
+
+  const showSuccess = (message) => {
+    setSuccess(message);
+    setTimeout(() => setSuccess(null), 5000);
+  };
+
+  const showInfo = (message) => {
+    setInfo(message);
+    setTimeout(() => setInfo(null), 3000);
+  };
+
+  // Clear all messages
+  const clearMessages = () => {
+    setError(null);
+    setSuccess(null);
+    setInfo(null);
+  };
 
   // Real API calls
   const propertyAPI = {
@@ -372,11 +427,12 @@ const AdminDashboard = () => {
   const fetchProperties = async () => {
     try {
       setLoading(true);
-      setError(null);
+      clearMessages();
+      // showInfo('Loading properties...');
       const response = await propertyAPI.getProperties();
       setProperties(response);
     } catch (err) {
-      setError('Failed to fetch properties: ' + err.message);
+      showError('Failed to fetch properties: ' + err.message);
       console.error('Error fetching properties:', err);
     } finally {
       setLoading(false);
@@ -403,12 +459,6 @@ const AdminDashboard = () => {
       icon: DollarSign, 
       color: 'bg-yellow-500' 
     },
-    // { 
-    //   title: 'Land Plots', 
-    //   value: properties.filter(p => p.propertyType === 'lands').length, 
-    //   icon: MapPin, 
-    //   color: 'bg-purple-500' 
-    // }
   ];
 
   const handleAddProperty = () => {
@@ -431,6 +481,7 @@ const AdminDashboard = () => {
       image: null,
     });
     setShowModal(true);
+    clearMessages();
   };
 
   const handleEditProperty = (property) => {
@@ -457,15 +508,19 @@ const AdminDashboard = () => {
       image: property.image || null
     });
     setShowModal(true);
+    clearMessages();
   };
 
   const handleDeleteProperty = async (id) => {
     if (window.confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
       try {
+        clearMessages();
+        showInfo('Deleting property...');
         await propertyAPI.deleteProperty(id);
         await fetchProperties();
+        showSuccess('Property deleted successfully!');
       } catch (err) {
-        setError('Failed to delete property: ' + err.message);
+        showError('Failed to delete property: ' + err.message);
         console.error('Error deleting property:', err);
       }
     }
@@ -489,19 +544,33 @@ const AdminDashboard = () => {
 
   const handleSaveProperty = async () => {
     try {
-      setError(null);
+      clearMessages();
+      setLoading(true);
+
+      let successMessage = '';
       
       if (modalType === 'add') {
+        // showInfo('Adding property...');
         await propertyAPI.addProperty(formData);
+        showSuccess('Property added successfully!');
       } else if (modalType === 'edit') {
+        showInfo('Updating property...');
         await propertyAPI.updateProperty(selectedProperty._id, formData);
+        showSuccess('Property updated successfully!');
       }
 
       await fetchProperties();
       setShowModal(false);
+
+      setTimeout(() => {
+      showSuccess(successMessage);
+    }, 100);
+
     } catch (err) {
-      setError(`Failed to ${modalType === 'add' ? 'create' : 'update'} property: ${err.message}`);
+      showError(`Failed to ${modalType === 'add' ? 'create' : 'update'} property: ${err.message}`);
       console.error('Error saving property:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -512,9 +581,53 @@ const AdminDashboard = () => {
     return matchesSearch && matchesCategory;
   });
 
+  // Message components
+  const MessageContainer = () => (
+    <div className="fixed top-4 right-4 z-50 space-y-3 w-80">
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg flex items-start">
+          <XCircle className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="font-medium">Error</p>
+            <p className="text-sm">{error}</p>
+          </div>
+          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-3">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+      
+      {success && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg flex items-start">
+          <CheckCircle className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="font-medium">Success</p>
+            <p className="text-sm">{success}</p>
+          </div>
+          <button onClick={() => setSuccess(null)} className="text-green-500 hover:text-green-700 ml-3">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+      
+      {info && (
+        <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg shadow-lg flex items-start">
+          <Info className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="font-medium">Info</p>
+            <p className="text-sm">{info}</p>
+          </div>
+          <button onClick={() => setInfo(null)} className="text-blue-500 hover:text-blue-700 ml-3">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
   const Sidebar = () => (
-    <div className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0">
-      <div className="p-6 border-b">
+    <div className="w-64 bg-transparent shadow-lg h-screen fixed left-0 top-0">
+      <div className="pt-30 pl-6 border-b">
         <h1 className="text-2xl font-bold text-gray-800">Property Admin</h1>
         <p className="text-sm text-gray-600">Dream Nest Management</p>
       </div>
@@ -632,34 +745,13 @@ const AdminDashboard = () => {
         </button>
       </div>
 
-      {loading && <div className="text-center py-8">Loading properties...</div>}
-      {error && <div className="bg-red-100 text-red-700 p-4 rounded-lg">{error}</div>}
+      {loading && <div className="text-center py-8 text-gray-500 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500 mr-2"></div>
+        Loading properties...
+      </div>}
       
-      {!loading && !error && (
+      {!loading && (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search properties by title or address..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="text-black w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
-            </div>
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className="text-black px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-            >
-              <option value="all">All Categories</option>
-              <option value="Apartment">Apartments</option>
-              <option value="House">Houses</option>
-              <option value="Land">Land</option>
-            </select>
-          </div>
-
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -805,8 +897,11 @@ const AdminDashboard = () => {
           categoryOptions={categoryOptions}
           handleInputChange={handleInputChange}
           handleImageChange={handleImageChange}
+          loading={loading}
         />
       )}
+      
+      <MessageContainer />
     </div>
   );
 };
