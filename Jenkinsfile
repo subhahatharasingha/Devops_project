@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDS = 'devops_credential'      
-        DOCKERHUB_USER  = 'subhanya'             
-        BACKEND_IMAGE   = "${DOCKERHUB_USER}/devops_backend_image:latest"
-        FRONTEND_IMAGE  = "${DOCKERHUB_USER}/devops_frontend_image:latest"
+        DOCKERHUB_CREDS = 'dockerhub-creds'  // Jenkins credentials ID for Docker Hub username/password
+        DOCKERHUB_USER  = 'subhanya'         // Your Docker Hub username
+        BACKEND_IMAGE   = "${DOCKERHUB_USER}/devops_backend:latest"
+        FRONTEND_IMAGE  = "${DOCKERHUB_USER}/devops_frontend:latest"
     }
 
     stages {
@@ -18,39 +18,43 @@ pipeline {
         stage('Build Images') {
             steps {
                 echo 'Building backend image...'
-                sh 'docker build -t backend-image ./backend'
+                sh 'docker build -t devops_backend_image ./backend'
 
                 echo 'Building frontend image...'
-                sh 'docker build -t frontend-image ./frontend'
+                sh 'docker build -t devops_frontend_image ./frontend'
             }
         }
 
         stage('Tag Images') {
             steps {
-                sh "docker tag backend-image ${BACKEND_IMAGE}"
-                sh "docker tag frontend-image ${FRONTEND_IMAGE}"
+                sh "docker tag devops_backend_image ${BACKEND_IMAGE}"
+                sh "docker tag devops_frontend_image ${FRONTEND_IMAGE}"
             }
         }
 
-        stage('Push Images to Docker Hub') {
+        stage('Login to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDS}", usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]) {
-                    sh 'echo $DH_PASS | docker login -u $DH_USER --password-stdin'
-                    sh "docker push ${BACKEND_IMAGE}"
-                    sh "docker push ${FRONTEND_IMAGE}"
-                    sh 'docker logout'
+                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                 }
             }
         }
 
-        stage('Deploy Containers') {
+        stage('Push Images') {
             steps {
-                echo 'Removing old containers if they exist...'
+                sh "docker push ${BACKEND_IMAGE}"
+                sh "docker push ${FRONTEND_IMAGE}"
+            }
+        }
+
+        stage('Deploy (optional)') {
+            steps {
+                echo 'Stopping and removing old containers...'
                 sh 'docker rm -f mongo || true'
                 sh 'docker rm -f backend || true'
                 sh 'docker rm -f frontend || true'
 
-                echo 'Deploying using Docker Compose...'
+                echo 'Deploying with docker-compose...'
                 sh 'docker-compose up -d --build'
             }
         }
