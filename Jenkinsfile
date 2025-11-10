@@ -55,7 +55,7 @@ pipeline {
                 sh 'docker rm -f frontend || true'
 
                 echo 'Deploying with docker-compose...'
-                sh 'docker-compose up --build'
+                sh 'docker compose up --build'
             }
         }
     }
