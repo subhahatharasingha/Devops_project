@@ -2,9 +2,10 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_IMAGE = "subhanya/devops_backend_image:latest"
-        FRONTEND_IMAGE = "subhanya/devops_frontend_image:latest"
-        DOCKERHUB_CREDS = "devops_credential"
+        DOCKERHUB_CREDS = 'devops_credential'      
+        DOCKERHUB_USER  = 'subhanya'             
+        BACKEND_IMAGE   = "${DOCKERHUB_USER}/devops_backend_image:latest"
+        FRONTEND_IMAGE  = "${DOCKERHUB_USER}/devops_frontend_image:latest"
     }
 
     stages {
