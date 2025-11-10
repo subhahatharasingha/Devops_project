@@ -2,42 +2,63 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('devops_credential') 
-        IMAGE_NAME_BACKEND = "subhanya/devops_backend_image"
-        IMAGE_NAME_FRONTEND = "subhanya/devops_frontend_image"
-        GIT_REPO = "https://github.com/subhahatharasingha/Devops_project.git"
+        BACKEND_IMAGE = "subhanya/devops_backend_image:latest"
+        FRONTEND_IMAGE = "subhanya/devops_frontend_image:latest"
+        DOCKERHUB_CREDS = "devops_credential"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: "${GIT_REPO}"
+                checkout scm
             }
         }
 
-        stage('Build Backend Image') {
+        stage('Build Images') {
             steps {
-                sh "docker build -t $IMAGE_NAME_BACKEND:latest ./backend"
+                echo 'Building backend image...'
+                sh 'docker build -t backend-image ./backend'
+
+                echo 'Building frontend image...'
+                sh 'docker build -t frontend-image ./frontend'
             }
         }
 
-        stage('Build Frontend Image') {
+        stage('Tag Images') {
             steps {
-                sh "docker build -t $IMAGE_NAME_FRONTEND:latest ./frontend"
+                sh "docker tag backend-image ${BACKEND_IMAGE}"
+                sh "docker tag frontend-image ${FRONTEND_IMAGE}"
             }
         }
 
-        stage('Login to Docker Hub') {
+        stage('Push Images to Docker Hub') {
             steps {
-                sh "echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin"
+                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDS}", usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]) {
+                    sh 'echo $DH_PASS | docker login -u $DH_USER --password-stdin'
+                    sh "docker push ${BACKEND_IMAGE}"
+                    sh "docker push ${FRONTEND_IMAGE}"
+                    sh 'docker logout'
+                }
             }
         }
 
-        stage('Push Images') {
+        stage('Deploy Containers') {
             steps {
-                sh "docker push $IMAGE_NAME_BACKEND:latest"
-                sh "docker push $IMAGE_NAME_FRONTEND:latest"
+                echo 'Removing old containers if they exist...'
+                sh 'docker rm -f mongo || true'
+                sh 'docker rm -f backend || true'
+                sh 'docker rm -f frontend || true'
+
+                echo 'Deploying using Docker Compose...'
+                sh 'docker-compose up -d --build'
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up unused Docker images...'
+            sh 'docker image prune -f'
         }
     }
 }
