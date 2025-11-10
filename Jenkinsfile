@@ -47,17 +47,15 @@ pipeline {
             }
         }
 
-        stage('Deploy (optional)') {
-            steps {
-                echo 'Stopping and removing old containers...'
-                sh 'docker rm -f mongo || true'
-                sh 'docker rm -f backend || true'
-                sh 'docker rm -f frontend || true'
+       stage('Deploy Containers') {
+        steps {
+            echo 'Removing old containers if they exist...'
+            sh 'docker rm -f mongo_c backend_c frontend_c || true'
 
-                echo 'Deploying with docker-compose...'
-                sh 'docker compose up --build'
-            }
+            echo 'Deploying using Docker Compose...'
+            sh 'docker-compose up -d --build'
         }
+    }
     }
 
     post {
