@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDS = 'dockerhub-creds'  // Jenkins credentials ID for Docker Hub username/password
-        DOCKERHUB_USER  = 'subhanya'         // Your Docker Hub username
+        DOCKERHUB_CREDS = 'devops_credential'  
+        DOCKERHUB_USER  = 'subhanya'        
         BACKEND_IMAGE   = "${DOCKERHUB_USER}/devops_backend:latest"
         FRONTEND_IMAGE  = "${DOCKERHUB_USER}/devops_frontend:latest"
     }
