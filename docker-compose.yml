@@ -1,12 +1,13 @@
 services:
   mongo:
-    image: mongo:6
-    container_name: mongo
-    restart: always
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
+  image: mongo:6
+  container_name: mongo
+  restart: always
+  volumes:
+    - mongo_data:/data/db
+  expose:
+    - "27017"
+
 
   backend:
     image: subhanya/devops_backend:latest
