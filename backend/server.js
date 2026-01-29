@@ -13,7 +13,7 @@ const port = process.env.PORT || 4000;
 
 await connectDB();
 
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['http://3.95.25.116:5173'];
 
 // Middleware
 app.use(express.json());
@@ -28,5 +28,5 @@ app.use('/api/favorites', favoriteRouter);
 
 
 app.listen(port, () => {
-  console.log(`🚀 Server is running on http://localhost:${port}`);
+  console.log(`🚀 Server is running on http://3.95.25.116:${port}`);
 });

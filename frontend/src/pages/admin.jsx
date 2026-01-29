@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 // PropertyModal component with all required props
-const API_BASE_URL = 'http://localhost:4000/api';
+const API_BASE_URL = 'http://3.95.25.116:4000/api';
 
 const PropertyModal = ({ 
   modalType, 

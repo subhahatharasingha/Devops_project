@@ -42,7 +42,7 @@ const SignupPage = () => {
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:4000/api/user/register', {
+      const response = await fetch('http://3.95.25.116:4000/api/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
