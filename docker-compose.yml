@@ -1,11 +1,11 @@
 services:
   mongo:
-  image: mongo:6
-  container_name: mongo
-  restart: always
-  volumes:
+   image: mongo:6
+   container_name: mongo
+   restart: always
+   volumes:
     - mongo_data:/data/db
-  expose:
+   expose:
     - "27017"
 
 
