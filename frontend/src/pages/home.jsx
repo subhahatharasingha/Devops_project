@@ -40,7 +40,7 @@ export default function Homepage() {
             {/* Left Content */}
             <div>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                Why Dream Nest is Number One
+                subhanya
               </h2>
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
                 Dream Nest has been the leading real estate platform for over two decades, connecting millions of buyers, sellers, and renters with their perfect properties. Our comprehensive approach combines cutting-edge technology with personalized service to deliver exceptional results. From residential homes to commercial spaces, we provide end-to-end solutions that make real estate transactions seamless and successful.
