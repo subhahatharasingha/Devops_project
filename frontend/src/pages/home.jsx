@@ -24,7 +24,7 @@ export default function Homepage() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center text-white">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              FIND YOUR PLACE OF DREAM
+              FIND YOUR PLACE OF DREAM subhanya
             </h1>
             <p className="text-xl md:text-2xl mb-12 opacity-90">
               From as low as $10 per day with limited time offer discounts.
